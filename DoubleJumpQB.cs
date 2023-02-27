@@ -68,14 +68,14 @@ namespace PuppyScripts
         public override void Start()
         {
             base.Start();
-/*              DELETE THIS BEFORE BUILDING FOR EVERYONE
+        //      DELETE THIS BEFORE BUILDING FOR EVERYONE
             jumpAmount = JumpPackConfig.instance.CJumpAmount.Value;
             JumpForce = JumpPackConfig.instance.CJumpPower.Value;
             velocityForWallRun = JumpPackConfig.instance.VelocityForWallRun.Value;
             velocityForSlide = JumpPackConfig.instance.CVelocityForSlide.Value;
             MultVelBy = JumpPackConfig.instance.CSlideSlowRate.Value;
             slopeMultiplier = JumpPackConfig.instance.CSlopeVelocity.Value;
-*/
+
             mask = LayerMask.GetMask("Environment");
             resets = LayerMask.GetMask("NavBlock", "Environment", "TeleValid");
             StoredGravityMode = GM.Options.SimulationOptions.PlayerGravityMode;
@@ -118,12 +118,12 @@ namespace PuppyScripts
             base.FVRUpdate();
             //if (GM.CurrentMovementManager.Mode == FVRMovementManager.MovementMode.Armswinger)
             //{
-            //    GM.CurrentMovementManager.m_armSwingerVelocity = new Vector3(Velocity.x, 0, Velocity.z);
+            //    GM.CurrentMovementManager.m_smoothLocoVelocity = new Vector3(Velocity.x, 0, Velocity.z);
 
             //}
             //else if (GM.CurrentMovementManager.Mode == FVRMovementManager.MovementMode.TwinStick)
             // {
-            //    GM.CurrentMovementManager.m_twoAxisVelocity = new Vector3(Velocity.x, 0, Velocity.z);
+            //    GM.CurrentMovementManager.m_smoothLocoVelocity = new Vector3(Velocity.x, 0, Velocity.z);
 
             //}
             //Movement stuff
@@ -207,7 +207,7 @@ namespace PuppyScripts
 
 
                 //WAll Running code
-                if (!Grounded && jumpButtonPressed && ((Mathf.Abs(GM.CurrentMovementManager.m_armSwingerVelocity.x) + Mathf.Abs(GM.CurrentMovementManager.m_armSwingerVelocity.z)) > velocityForWallRun || (Mathf.Abs(GM.CurrentMovementManager.m_twoAxisVelocity.x) + (Mathf.Abs(GM.CurrentMovementManager.m_twoAxisVelocity.z)) > velocityForWallRun)))
+                if (!Grounded && jumpButtonPressed && ((Mathf.Abs(GM.CurrentMovementManager.m_smoothLocoVelocity.x) + Mathf.Abs(GM.CurrentMovementManager.m_smoothLocoVelocity.z)) > velocityForWallRun || (Mathf.Abs(GM.CurrentMovementManager.m_smoothLocoVelocity.x) + (Mathf.Abs(GM.CurrentMovementManager.m_smoothLocoVelocity.z)) > velocityForWallRun)))
                 {
                     Vector3 CastPoint = new Vector3(GM.CurrentPlayerBody.Torso.position.x, GM.CurrentPlayerBody.Torso.position.y - .35f, GM.CurrentPlayerBody.Torso.position.z);
                     Transform BodyMid = GM.CurrentPlayerBody.Torso;
@@ -225,13 +225,13 @@ namespace PuppyScripts
                             --timesJumped;
                         }
                         //Debug.Log("CastHit");
-                        if (GM.CurrentMovementManager.m_armSwingerVelocity.y < 1)
+                        if (GM.CurrentMovementManager.m_smoothLocoVelocity.y < 1)
                         {
-                            GM.CurrentMovementManager.m_armSwingerVelocity.y = 0;
+                            GM.CurrentMovementManager.m_smoothLocoVelocity.y = 0;
                         }
-                        if (GM.CurrentMovementManager.m_twoAxisVelocity.y < 1)
+                        if (GM.CurrentMovementManager.m_smoothLocoVelocity.y < 1)
                         {
-                            GM.CurrentMovementManager.m_twoAxisVelocity.y = 0;
+                            GM.CurrentMovementManager.m_smoothLocoVelocity.y = 0;
                         }
                     }
                     else if (isWallrunning)
@@ -260,8 +260,8 @@ namespace PuppyScripts
                     }
                 }
                 if (//!SlidePrepped &&
-                    (GM.Options.MovementOptions.CurrentMovementMode == FVRMovementManager.MovementMode.Armswinger && GM.CurrentMovementManager.m_armSwingerGrounded
-                    || GM.Options.MovementOptions.CurrentMovementMode == FVRMovementManager.MovementMode.TwinStick && GM.CurrentMovementManager.m_twoAxisGrounded))
+                    (GM.Options.MovementOptions.CurrentMovementMode == FVRMovementManager.MovementMode.Armswinger && GM.CurrentMovementManager.m_isGrounded
+                    || GM.Options.MovementOptions.CurrentMovementMode == FVRMovementManager.MovementMode.TwinStick && GM.CurrentMovementManager.m_isGrounded))
                 {
                     //Debug.Log("GROUNDED");
                     hasDoubleJumped = false;
@@ -289,13 +289,13 @@ namespace PuppyScripts
             Vector3 retVel = new Vector3();
             if (body.Mode == FVRMovementManager.MovementMode.Armswinger)
             {
-                retVel = body.m_armSwingerVelocity;
+                retVel = body.m_smoothLocoVelocity;
 
 
             }
             else if (body.Mode == FVRMovementManager.MovementMode.TwinStick)
             {
-                retVel = body.m_twoAxisVelocity;
+                retVel = body.m_smoothLocoVelocity;
 
             }
             return retVel;
@@ -308,12 +308,12 @@ namespace PuppyScripts
             Vector3 newVel = new Vector3(Vel.x, 0, Vel.z);
             if (body.Mode == FVRMovementManager.MovementMode.Armswinger)
             {
-                body.m_armSwingerVelocity = newVel;
+                body.m_smoothLocoVelocity = newVel;
 
             }
             else if (body.Mode == FVRMovementManager.MovementMode.TwinStick)
             {
-                body.m_twoAxisVelocity = newVel;
+                body.m_smoothLocoVelocity = newVel;
 
             }
 
@@ -390,8 +390,8 @@ namespace PuppyScripts
 
             if (SlidePrepped)
             {
-                GM.CurrentMovementManager.m_armSwingerGrounded = false;
-                GM.CurrentMovementManager.m_twoAxisGrounded = false;
+                GM.CurrentMovementManager.m_isGrounded = false;
+                GM.CurrentMovementManager.m_isGrounded = false;
                 GM.CurrentMovementManager.DelayGround(0.2f);
                 //Debug.Log("Sliding is true now");
                 //GM.CurrentMovementManager.DelayGround(.1f);
@@ -446,8 +446,8 @@ namespace PuppyScripts
 
                         //                  NewNeckPosition.position.y =
 
-                        GM.CurrentMovementManager.m_armSwingerVelocity.y = 0;
-                        GM.CurrentMovementManager.m_twoAxisVelocity.y = 0;
+                        GM.CurrentMovementManager.m_smoothLocoVelocity.y = 0;
+                        GM.CurrentMovementManager.m_smoothLocoVelocity.y = 0;
                         //GM.CurrentMovementManager.m_armSwingerStepHeight = 2f;
                         //GM.CurrentMovementManager.m_twoAxisStepHeight = 2f;
                         Velocity.y = 0;
@@ -457,12 +457,12 @@ namespace PuppyScripts
                           Vector3 newVel = new Vector3(Velocity.x, 0, Velocity.z);
                           if (GM.CurrentMovementManager.Mode == FVRMovementManager.MovementMode.Armswinger)
                           {
-                              GM.CurrentMovementManager.m_armSwingerVelocity = newVel;
+                              GM.CurrentMovementManager.m_smoothLocoVelocity = newVel;
 
                           }
                           else if (GM.CurrentMovementManager.Mode == FVRMovementManager.MovementMode.TwinStick)
                           {
-                              GM.CurrentMovementManager.m_twoAxisVelocity = newVel;
+                              GM.CurrentMovementManager.m_smoothLocoVelocity = newVel;
 
                           }
 

@@ -454,6 +454,7 @@ namespace PuppyScripts
         public Vector3 StoredOverrideRot;
         public Vector3 StoredOverridePost;
         public Vector3 StoredOverrideRott;
+        public Quaternion StoredLocalPoseOverrideRot;
         private Vector3 StoredXYRecoilBase;
         private bool HasChangedPoseOverride = false;
         public void AttachPoseChanger(FVRFireArm gun)
@@ -469,6 +470,7 @@ namespace PuppyScripts
             StoredOverrideRot = gun.PoseOverride.localEulerAngles;
             StoredOverridePost = gun.PoseOverride_Touch.localPosition;
             StoredOverrideRott = gun.PoseOverride_Touch.localEulerAngles;
+            StoredLocalPoseOverrideRot = gun.m_storedLocalPoseOverrideRot;
             //Begin making the changes
             // gun.RecoilingPoseHolder.localPosition = newRecoilHolder.localPosition;
             // gun.RecoilingPoseHolder.localEulerAngles = newRecoilHolder.localEulerAngles;
@@ -482,6 +484,7 @@ namespace PuppyScripts
             gun.RecoilingPoseHolder.localPosition = newRecoilHolder.localPosition;
             //gun.RecoilingPoseHolder.rotation = newRecoilHolder.rotation;
             gun.m_recoilPoseHolderLocalPosStart = gun.RecoilingPoseHolder.localPosition;
+            gun.m_storedLocalPoseOverrideRot = newOverride.transform.localRotation;
             gun.PoseOverride.position = newOverride.position;
             gun.PoseOverride.rotation = newOverride.rotation;
            // Debug.Log("makes override 2");
@@ -504,6 +507,7 @@ namespace PuppyScripts
             gun.RecoilingPoseHolder.localPosition = StoredRecoilHolderPos;
             //gun.RecoilingPoseHolder.localEulerAngles = StoredRecoilHolderRot;
             gun.m_recoilPoseHolderLocalPosStart = StoredOriginalRecoilHolderPos;
+            gun.m_storedLocalPoseOverrideRot = StoredLocalPoseOverrideRot;
             gun.PoseOverride.localPosition = StoredOverridePos;
             gun.PoseOverride.localEulerAngles = StoredOverrideRot;
             gun.PoseOverride_Touch.localPosition = StoredOverridePost;
