@@ -104,6 +104,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BepinexPlugins\BepinLoaderizer.cs" />
+    <Compile Include="MappingTools\PlayerTeleport.cs" />
+    <Compile Include="PumpActionForwardAssist.cs" />
+    <Compile Include="ShotgunMagazineUnloader.cs" />
     <Compile Include="DoubleJumpQB.cs" />
     <Compile Include="EditorToolKit\AttributeChangingInterface.cs" />
     <Compile Include="EditorToolKit\EditorButton.cs" />
@@ -120,7 +123,7 @@
     <Compile Include="MusicPlayer\PhysicalSong.cs" />
     <Compile Include="MusicPlayer\RecordPlayer.cs" />
     <Compile Include="PistolSlideDiverter.cs" />
-    <Compile Include="PlayerBodyTrigger.cs" />
+    <Compile Include="MappingTools\PlayerBodyTrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnapOnSuppressor\SnapOnSuppressorInterface.cs" />
   </ItemGroup>
