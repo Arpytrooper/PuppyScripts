@@ -42,6 +42,8 @@ namespace PuppyScripts
         public bool isTesting = false;
         [Tooltip("This Gameobject works in the unity editor. \n Make sure this is parented to the ShellSled and the local position is 0")]
         public GameObject TestingShell;
+        
+       
         public override void Start()
         {
             base.Start();
@@ -82,6 +84,7 @@ namespace PuppyScripts
             }else if(isSleding && ShellSled.IsHeld && ShellSled.transform.position == FullInPoint.transform.position)
             {
                 ShellSled.EndInteraction(ShellSled.m_hand);
+                SM.PlayGenericSound(Shotgun.AudioClipSet.MagazineInsertRound, Magazine.DisplayBullets[0].transform.position);
                 ResetSled();
             }
             else if (isSleding && ShellSled.IsHeld && ShellSled.transform.position == FullOutPoint.position)
@@ -135,7 +138,7 @@ namespace PuppyScripts
                         {
                             Physics.IgnoreCollision(PhysColliderForLerpingShell, col, true);
                         }
-                    
+                    //the shotgun will have its magazine set to null and stored here
                 }
             }*/
         }
@@ -174,6 +177,8 @@ namespace PuppyScripts
             Magazine.DisplayBullets[0].transform.localEulerAngles = Vector3.zero;
             ShellSled.transform.position = PopOutPoint.transform.position;
             isSleding = false;
+            Shotgun.Magazine = Magazine;
+            
         }
         public override void SimpleInteraction(FVRViveHand hand)
         {
@@ -193,6 +198,7 @@ namespace PuppyScripts
                     hand.ForceSetInteractable(ShellSled);
                     ShotgunMagazineCollider.enabled = false;                    
                     isSleding = true;
+                    Shotgun.Magazine = null;
                     //Might need this Magazine.State = FVRFireArmMagazine.MagazineState.Locked;
                 } else if (isSleding)
                 {

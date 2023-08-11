@@ -9,15 +9,32 @@ namespace PuppyScripts
     public class PumpActionForwardAssist : TubeFedShotgunBoltReleaseTrigger
     {
         public bool tempAutoMode = false;
-        
-        
+
+        private bool hasLockedHandle = false;
+
+        //the FVRUpdate is me trying to condense two scripts
+        public override void FVRUpdate()
+        {
+            base.FVRUpdate();
+            if (!hasLockedHandle && Shotgun.Mode == TubeFedShotgun.ShotgunMode.PumpMode && Shotgun.Handle.CurPos == TubeFedShotgunHandle.BoltPos.Rear && !Shotgun.m_proxy.IsFull)
+            {
+                hasLockedHandle = true;
+                Shotgun.Handle.LockHandle();
+            } else if (hasLockedHandle && Shotgun.Mode == TubeFedShotgun.ShotgunMode.PumpMode && Shotgun.Handle.CurPos == TubeFedShotgunHandle.BoltPos.Forward)
+            {
+                hasLockedHandle = false;
+            }
+            
+            
+        }
         public override void Poke(FVRViveHand hand)
         {
-            if (!Shotgun.Handle.m_isHeld && Shotgun.Bolt.CurPos == TubeFedShotgunBolt.BoltPos.Rear && Shotgun.Mode == TubeFedShotgun.ShotgunMode.PumpMode)
+            if (!Shotgun.Handle.m_isHeld && !Shotgun.IsAltHeld && Shotgun.Bolt.CurPos == TubeFedShotgunBolt.BoltPos.Rear && Shotgun.Mode == TubeFedShotgun.ShotgunMode.PumpMode)
             {
                 Shotgun.Mode = TubeFedShotgun.ShotgunMode.Automatic;
                 tempAutoMode = true;
                 Shotgun.Handle.CurPos = TubeFedShotgunHandle.BoltPos.ForwardToMid;
+               // Shotgun.Handle.LockHandle();
             }
             base.Poke(hand);
         }
@@ -42,7 +59,16 @@ namespace PuppyScripts
                 tempAutoMode = false;                
                 Shotgun.Handle.CurPos = TubeFedShotgunHandle.BoltPos.Forward;
                 Shotgun.Handle.LastPos = TubeFedShotgunHandle.BoltPos.ForwardToMid;
+                    hasLockedHandle = false;    
+                /*if (Shotgun.Mode == TubeFedShotgun.ShotgunMode.PumpMode)
+                {
+                    Shotgun.Handle.UnlockHandle();
+                }*/
             }
+            /*if (hasLockedHandle)
+            {
+                Shotgun.Handle.LockHandle();
+            }*/
         }
 
     }

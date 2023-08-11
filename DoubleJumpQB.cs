@@ -211,8 +211,9 @@ namespace PuppyScripts
                 {
                     Vector3 CastPoint = new Vector3(GM.CurrentPlayerBody.Torso.position.x, GM.CurrentPlayerBody.Torso.position.y - .35f, GM.CurrentPlayerBody.Torso.position.z);
                     Transform BodyMid = GM.CurrentPlayerBody.Torso;
+                    RaycastHit bodyHit = new RaycastHit();
 
-                    if (Physics.Raycast(CastPoint, BodyMid.TransformDirection(Vector3.right), .25f, mask) || Physics.Raycast(CastPoint, BodyMid.TransformDirection(Vector3.left), .25f, mask) || Physics.Raycast(CastPoint, BodyMid.TransformDirection(Vector3.forward), .25f, mask) || Physics.Raycast(CastPoint, BodyMid.TransformDirection(Vector3.back), .25f, mask))
+                    if (Physics.Raycast(CastPoint, BodyMid.TransformDirection(Vector3.right), out bodyHit, .25f, mask) || Physics.Raycast(CastPoint, BodyMid.TransformDirection(Vector3.left), out bodyHit, .25f, mask) || Physics.Raycast(CastPoint, BodyMid.TransformDirection(Vector3.forward), out bodyHit, .25f, mask) || Physics.Raycast(CastPoint, BodyMid.TransformDirection(Vector3.back), out bodyHit, .25f, mask))
                     {
                         if (!isWallrunning) //sets isWallrunning to true and adds a jump if you have none left
                         {
@@ -220,6 +221,7 @@ namespace PuppyScripts
                             isWallrunning = true;
                             GM.Options.SimulationOptions.PlayerGravityMode = SimulationOptions.GravityMode.None;
                         }
+                        //I have to make it so I 
                         if (timesJumped == jumpAmount)
                         {
                             --timesJumped;
